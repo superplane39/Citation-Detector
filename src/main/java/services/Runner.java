@@ -31,7 +31,7 @@ public class Runner {
 
     public Runner(Room room){
         this.room = room;
-        this.previousRunTime = Instant.now().minus(1, ChronoUnit.DAYS);
+        this.previousRunTime = Instant.now().minus(5, ChronoUnit.MINUTES);
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
