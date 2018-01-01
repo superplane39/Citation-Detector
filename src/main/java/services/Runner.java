@@ -37,13 +37,13 @@ public class Runner {
 
     public void startDetector(){
         room.addEventListener(EventType.USER_MENTIONED,event->mention(room, event, false));
-
         Runnable runner = () -> runEditBotOnce(room);
         executorService.scheduleAtFixedRate(runner, 0, 5, TimeUnit.MINUTES);
     }
 
  private void mention(Room room, UserMentionedEvent event, boolean b) {
         String message = event.getMessage().getPlainContent();
+        LOGGER.debug(message);
         if(message.toLowerCase().contains("help")){
             room.send("I'm an experimental bot");
         }
@@ -58,6 +58,7 @@ public class Runner {
     }
 
     public void endDetector(){
+        LOGGER.debug("Shutting down");
         executorService.shutdown();
     }
 
@@ -66,7 +67,6 @@ public class Runner {
             String desc = "[ [GetAllTehCommentz](https://git.io/vbxFf) ]";
             String url = "http://api.stackexchange.com/2.2/comments";
             String apiKey = "kmtAuIIqwIrwkXm1*p3qqA((";
-
             int number = 1;
             JsonObject json;
             do {
@@ -81,14 +81,11 @@ public class Runner {
                         "filter", "!-*f(6skrN-SN",
                         "key", apiKey);
 
-
                 if (json.has("items")) {
                     for (JsonElement element : json.get("items").getAsJsonArray()) {
                         JsonObject object = element.getAsJsonObject();
-                        if (object.get("body_markdown").getAsString().matches(".*.*")) {
                             room.send(desc + " New comment:");
                             room.send(object.get("link").getAsString());
-                        }
                     }
                 }
                 JsonUtils.handleBackoff(LOGGER,json);
@@ -96,7 +93,6 @@ public class Runner {
                 LOGGER.debug(json.toString());
             }
             while (json.get("has_more").getAsBoolean());
-
             previousRunTime = Instant.now();
         }
         catch (Exception e){
