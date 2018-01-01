@@ -63,7 +63,7 @@ public class Runner {
 
     public void runEditBotOnce(Room room){
         try{
-            String desc = "[ [GetAllTehCommetz](https://git.io/vbxFf) ]";
+            String desc = "[ [GetAllTehCommentz](https://git.io/vbxFf) ]";
             String url = "http://api.stackexchange.com/2.2/comments";
             String apiKey = "kmtAuIIqwIrwkXm1*p3qqA((";
 
