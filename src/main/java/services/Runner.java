@@ -37,7 +37,6 @@ public class Runner {
 
     public void startDetector(){
         room.addEventListener(EventType.USER_MENTIONED,event->mention(room, event, false));
-        room.addEventListener(EventType.MESSAGE_POSTED ,event-> newMessage(room, event, false));
 
         Runnable runner = () -> runEditBotOnce(room);
         executorService.scheduleAtFixedRate(runner, 0, 5, TimeUnit.MINUTES);
