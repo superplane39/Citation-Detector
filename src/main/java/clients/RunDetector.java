@@ -35,7 +35,7 @@ public class RunDetector {
 
         Room room = client.joinRoom(ChatHost.STACK_EXCHANGE ,30332);
 
-        room.send("[ [Citation Detector](https://git.io/v9jKB) ] started");
+        room.send("[ [GetAllTehCommentz](https://git.io/vbxFf) ] started");
         
         Runner runner = new Runner(room);
         runner.startDetector();
