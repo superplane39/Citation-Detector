@@ -43,27 +43,13 @@ public class Runner {
         executorService.scheduleAtFixedRate(runner, 0, 5, TimeUnit.MINUTES);
     }
 
-    private static void newMessage(Room room, MessagePostedEvent event, boolean b) {
-        String message = event.getMessage().getPlainContent();
-        int cp = Character.codePointAt(message, 0);
-        if(message.trim().startsWith("@bots alive")){
-            room.send("Still new to the room, don't scare me plizz");
-        }
-        else if (cp == 128642 || (cp>=128644 && cp<=128650)){
-            room.send("\uD83D\uDE83");
-        }
-    }
-
-    private void mention(Room room, UserMentionedEvent event, boolean b) {
+ private void mention(Room room, UserMentionedEvent event, boolean b) {
         String message = event.getMessage().getPlainContent();
         if(message.toLowerCase().contains("help")){
-            room.send("I'm a bot that tracks citation posts");
+            room.send("I'm an experimental bot");
         }
         else if(message.toLowerCase().contains("alive")){
             room.send("Yep");
-        }
-        else if(message.matches(".*(Namaste|Namaskaram|Hi|Vanakkam|Hello).*")){
-            room.send("नमस्कार:");
         }
     }
 
@@ -78,7 +64,7 @@ public class Runner {
 
     public void runEditBotOnce(Room room){
         try{
-            String desc = "[ [Citation Detector](https://git.io/v9jKB) ]";
+            String desc = "[ [GetAllTehCommetz](https://git.io/vbxFf) ]";
             String url = "http://api.stackexchange.com/2.2/comments";
             String apiKey = "kmtAuIIqwIrwkXm1*p3qqA((";
 
@@ -88,7 +74,7 @@ public class Runner {
 
                  json = JsonUtils.get(url,
                         "sort", "creation",
-                        "site", "hinduism",
+                        "site", "interpersonal",
                         "pagesize", "100",
                         "page", "" + number,
                         "fromdate", Long.toString(previousRunTime.getEpochSecond()),
@@ -100,8 +86,9 @@ public class Runner {
                 if (json.has("items")) {
                     for (JsonElement element : json.get("items").getAsJsonArray()) {
                         JsonObject object = element.getAsJsonObject();
-                        if (object.get("body_markdown").getAsString().matches(".*(cite|add|provide|include|give).*(\\ssource|reference).*")) {
-                            room.send(desc + " Answer with comment with the text 'cite sources': " + object.get("link").getAsString());
+                        if (object.get("body_markdown").getAsString().matches(".*.*")) {
+                            room.send(desc + " New comment:");
+                            room.send(object.get("link").getAsString());
                         }
                     }
                 }
