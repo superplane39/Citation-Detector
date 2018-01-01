@@ -33,7 +33,7 @@ public class RunDetector {
 
         client = new StackExchangeClient(email, password);
 
-        Room room = client.joinRoom(ChatHost.STACK_EXCHANGE ,50198);
+        Room room = client.joinRoom(ChatHost.STACK_EXCHANGE ,30332);
 
         room.send("[ [Citation Detector](https://git.io/v9jKB) ] started");
         
