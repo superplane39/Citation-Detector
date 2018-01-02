@@ -9,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.JsonUtils;
 
+import javax.json.Json;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,26 +25,28 @@ public class Runner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Runner.class);
     private Instant previousRunTime ;
-    private Room room;
+    private Room rooms[];
     private ScheduledExecutorService executorService;
 
-    public Runner(Room room){
-        this.room = room;
+    public Runner(Room[] rooms){
+        this.rooms = rooms;
         this.previousRunTime = Instant.now().minus(5, ChronoUnit.MINUTES);
         executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void startDetector(){
-        room.addEventListener(EventType.USER_MENTIONED,event->mention(room, event, false));
-        Runnable runner = () -> runCommentBotOnce(room);
-        executorService.scheduleAtFixedRate(runner, 0, 2, TimeUnit.MINUTES);
+        for (Room room: rooms) {
+            room.addEventListener(EventType.USER_MENTIONED, event -> mention(room, event, false));
+        }
+        Runnable runner = () -> runCommentBotOnce(rooms);
+        executorService.scheduleAtFixedRate(runner, 0, 5, TimeUnit.MINUTES);
     }
 
     private void mention(Room room, UserMentionedEvent event, boolean b) {
         String message = event.getMessage().getPlainContent();
         LOGGER.debug(message);
         if(message.toLowerCase().contains("help")){
-            room.send("I'm an experimental bot, trying to detect all new comments posted on Interpersonal.SE and post them to a chatroom for monitering.");
+            room.send("I'm an experimental bot");
         }
         else if(message.toLowerCase().contains("alive")){
             room.send("Yep");
@@ -58,15 +63,25 @@ public class Runner {
         executorService.shutdown();
     }
 
-    private void runCommentBotOnce(Room room){
+    private void runCommentBotOnce(Room []rooms){
+        List<JsonObject> comments = getDataFromApi();
+        String desc = "[ [GetAllTehCommentz](https://git.io/vbxFf) ]";
+        for (Room room: rooms) {
+            for (JsonObject comment : comments) {
+                room.send(desc + " New comment:");
+                room.send(comment.get("link").getAsString());
+            }
+        }
+    }
+
+    private List<JsonObject> getDataFromApi() {
+        List<JsonObject> commentObjs = new ArrayList<>();
         try{
-            String desc = "[ [GetAllTehCommentz](https://git.io/vbxFf) ]";
             String url = "http://api.stackexchange.com/2.2/comments";
             String apiKey = "kmtAuIIqwIrwkXm1*p3qqA((";
             int number = 1;
             JsonObject json;
             do {
-
                  json = JsonUtils.get(url,
                         "sort", "creation",
                         "site", "interpersonal",
@@ -80,8 +95,7 @@ public class Runner {
                 if (json.has("items")) {
                     for (JsonElement element : json.get("items").getAsJsonArray()) {
                         JsonObject object = element.getAsJsonObject();
-                            room.send(desc + " New comment:");
-                            room.send(object.get("link").getAsString());
+                        commentObjs.add(object);
                     }
                 }
                 JsonUtils.handleBackoff(LOGGER,json);
@@ -94,6 +108,6 @@ public class Runner {
         catch (Exception e){
             e.printStackTrace();
         }
-
+        return commentObjs;
     }
 }

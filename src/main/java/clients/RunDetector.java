@@ -33,11 +33,14 @@ public class RunDetector {
 
         client = new StackExchangeClient(email, password);
 
-        Room room = client.joinRoom(ChatHost.STACK_EXCHANGE ,30332);
+        Room[] rooms = {client.joinRoom(ChatHost.STACK_EXCHANGE ,54445),
+        client.joinRoom(ChatHost.STACK_EXCHANGE ,59667)};
 
-        room.send("[ [GetAllTehCommentz](https://git.io/vbxFf) ] started");
-        
-        Runner runner = new Runner(room);
+        for (Room room: rooms){
+            room.send("[ [GetAllTehCommentz](https://git.io/vbxFf) ] started");
+        }
+
+        Runner runner = new Runner(rooms);
         runner.startDetector();
 
     }
