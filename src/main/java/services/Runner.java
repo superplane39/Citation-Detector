@@ -39,14 +39,14 @@ public class Runner {
             room.addEventListener(EventType.USER_MENTIONED, event -> mention(room, event, false));
         }
         Runnable runner = () -> runCommentBotOnce(rooms);
-        executorService.scheduleAtFixedRate(runner, 0, 5, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(runner, 0, 2, TimeUnit.MINUTES);
     }
 
     private void mention(Room room, UserMentionedEvent event, boolean b) {
         String message = event.getMessage().getPlainContent();
         LOGGER.debug(message);
         if(message.toLowerCase().contains("help")){
-            room.send("I'm an experimental bot");
+            room.send("I'm an experimental bot, trying to detect all new comments posted on Interpersonal.SE and post them to a chatroom for monitering.");
         }
         else if(message.toLowerCase().contains("alive")){
             room.send("Yep");
