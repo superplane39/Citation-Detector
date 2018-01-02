@@ -33,8 +33,8 @@ public class RunDetector {
 
         client = new StackExchangeClient(email, password);
 
-        Room[] rooms = {client.joinRoom(ChatHost.STACK_EXCHANGE ,54445),
-        client.joinRoom(ChatHost.STACK_EXCHANGE ,59667)};
+        Room[] rooms = {client.joinRoom(ChatHost.STACK_EXCHANGE ,30332),
+        client.joinRoom(ChatHost.STACK_EXCHANGE ,61165)}; //58064
 
         for (Room room: rooms){
             room.send("[ [GetAllTehCommentz](https://git.io/vbxFf) ] started");
