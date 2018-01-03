@@ -51,6 +51,10 @@ public class Runner {
         else if(message.toLowerCase().contains("alive")){
             room.send("Yep");
         }
+        else if(message.toLowerCase().contains("shutdown")){
+            if (event.getMessage().getUser().isModerator() || event.getMessage().getUser().isRoomOwner())
+                shutdownBot();
+        }
     }
 
     public void restartMonitor(){
