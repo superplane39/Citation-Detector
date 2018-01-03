@@ -63,6 +63,19 @@ public class Runner {
         executorService.shutdown();
     }
 
+    private void leaveRoom(Room room){
+        LOGGER.debug("Leaving room "+room.getRoomId());
+        room.leave();
+    }
+
+    private void shutdownBot(){
+        for (Room room: rooms) {
+            leaveRoom(room);
+        }
+        endDetector();
+        System.exit(0);
+    }
+
     private void runCommentBotOnce(Room []rooms){
         List<JsonObject> comments = getDataFromApi();
         String desc = "[ [GetAllTehCommentz](https://git.io/vbxFf) ]";

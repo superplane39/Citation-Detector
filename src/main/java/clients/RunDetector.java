@@ -36,6 +36,8 @@ public class RunDetector {
         Room[] rooms = {client.joinRoom(ChatHost.STACK_EXCHANGE ,30332),
         client.joinRoom(ChatHost.STACK_EXCHANGE ,58064)};
 
+
+
         for (Room room: rooms){
             room.send("[ [GetAllTehCommentz](https://git.io/vbxFf) ] started");
         }
