@@ -51,6 +51,10 @@ public class Runner {
         else if(message.toLowerCase().contains("alive")){
             room.send("Yep");
         }
+        else if(message.toLowerCase().contains("shutdown")){
+            if (event.getMessage().getUser().isModerator() || event.getMessage().getUser().isRoomOwner())
+                shutdownBot();
+        }
     }
 
     public void restartMonitor(){
@@ -61,6 +65,19 @@ public class Runner {
     private void endDetector(){
         LOGGER.debug("Shutting down");
         executorService.shutdown();
+    }
+
+    private void leaveRoom(Room room){
+        LOGGER.debug("Leaving room "+room.getRoomId());
+        room.leave();
+    }
+
+    private void shutdownBot(){
+        for (Room room: rooms) {
+            leaveRoom(room);
+        }
+        endDetector();
+        System.exit(0);
     }
 
     private void runCommentBotOnce(Room []rooms){
